@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>لعبة الحروف</title>
-  <meta property="og:image" content="https://smwknjyb5-glitch.github.io/jeulet/jeulet.jpg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="صورة تطبيق  لعبة الحروف">
+<title>لعبة الحروف – Jeu de lettres – Letters Game</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="لعبة الحروف – Jeu de lettres – Letters Game">
+<meta property="og:description" content="كوّن أكبر عدد من الكلمات من 10 حروف: عربي، فرنسي، إنجليزي">
+<meta property="og:image" content="horouf.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <style>
 :root{--bg:#f6f1e7;--card:#fff;--ink:#2b2a33;--mut:#6b6875;--ac:#e07a1f;--ok:#2e9e5b;--bad:#d64545;--tile:#ffd166;--tileb:#c98f00;--line:#e5dfd2;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -17,24 +18,26 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",Arial,sans-serif;min-height:100vh}
 .wrap{max-width:640px;margin:0 auto;padding:14px}
-h1{text-align:center;margin:6px 0 12px;font-size:1.6rem}
-.bar{display:flex;gap:8px;justify-content:space-between;margin-bottom:12px}
+h1{text-align:center;margin:6px 0 10px;font-size:1.6rem}
+.langs{display:flex;gap:8px;justify-content:center;margin-bottom:12px}
+.langs button{font-family:inherit;font-size:1rem;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 16px;cursor:pointer}
+.langs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.bar{display:flex;gap:8px;margin-bottom:12px}
 .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px;text-align:center}
 .stat b{display:block;font-size:1.4rem;color:var(--ac)}
 .stat span{font-size:.8rem;color:var(--mut)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
 .tiles{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.tile{width:54px;height:60px;font-size:2rem;font-weight:700;border:0;border-radius:12px;background:var(--tile);color:#2b2a33;box-shadow:0 4px 0 var(--tileb);cursor:pointer;font-family:inherit}
+.tile{width:54px;height:60px;font-size:2rem;font-weight:700;border:0;border-radius:12px;background:var(--tile);color:#2b2a33;box-shadow:0 4px 0 var(--tileb);cursor:pointer;font-family:inherit;text-transform:uppercase}
 .tile:active{transform:translateY(3px);box-shadow:0 1px 0 var(--tileb)}
 .tile.used{opacity:.25;box-shadow:none;transform:none}
-.word{min-height:64px;display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap;font-size:2rem;font-weight:700;letter-spacing:2px}
-.word .ph{color:var(--mut);font-size:1rem;font-weight:400;letter-spacing:0}
+.word{min-height:64px;display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap;font-size:2rem;font-weight:700;text-transform:uppercase}
+.word .ph{color:var(--mut);font-size:1rem;font-weight:400;text-transform:none}
 .chip{background:var(--tile);color:#2b2a33;border-radius:10px;padding:2px 10px}
 .btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px}
 button.b{font-family:inherit;font-size:1rem;border:0;border-radius:10px;padding:10px 16px;background:var(--ac);color:#fff;cursor:pointer}
 button.b.g{background:var(--card);color:var(--ink);border:1px solid var(--line)}
 button.b.ok{background:var(--ok)}
-button.b:disabled{opacity:.45}
 .msg{min-height:26px;text-align:center;margin-top:8px;font-weight:600}
 .msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}
 .found{display:flex;flex-wrap:wrap;gap:6px}
@@ -47,135 +50,148 @@ h3{margin:0 0 8px;font-size:1rem}
 </head>
 <body>
 <div class="wrap">
-  <h1>🔤 لعبة الحروف</h1>
-  <div class="bar">
-    <div class="stat"><b id="time">90</b><span>الوقت</span></div>
-    <div class="stat"><b id="score">0</b><span>النقاط</span></div>
-    <div class="stat"><b id="best">0</b><span>أفضل نتيجة</span></div>
+  <h1 id="title"></h1>
+  <div class="langs" dir="ltr">
+    <button data-l="ar">العربية</button><button data-l="fr">Français</button><button data-l="en">English</button>
   </div>
-
+  <div class="bar">
+    <div class="stat"><b id="time">90</b><span data-t="time"></span></div>
+    <div class="stat"><b id="score">0</b><span data-t="score"></span></div>
+    <div class="stat"><b id="best">0</b><span data-t="best"></span></div>
+  </div>
   <div class="card">
     <div class="word" id="word"></div>
     <div class="msg" id="msg"></div>
     <div class="btns">
-      <button class="b ok" id="bOk">✔ تأكيد</button>
-      <button class="b g" id="bBack">⌫ حذف</button>
-      <button class="b g" id="bClear">مسح</button>
-      <button class="b g" id="bShuf">🔀 خلط</button>
+      <button class="b ok" id="bOk" data-t="ok"></button>
+      <button class="b g" id="bBack" data-t="back"></button>
+      <button class="b g" id="bClear" data-t="clear"></button>
+      <button class="b g" id="bShuf" data-t="shuf"></button>
     </div>
   </div>
-
   <div class="card">
     <div class="tiles" id="tiles"></div>
-    <p class="hint">كوّن أكبر عدد من الكلمات (3 حروف فأكثر). النقاط = مربع عدد الحروف. يمكنك أيضًا الكتابة بلوحة المفاتيح.</p>
+    <p class="hint" data-t="hint"></p>
   </div>
-
   <div class="card">
-    <h3>كلماتك (<span id="cnt">0</span>)</h3>
+    <h3><span data-t="mine"></span> (<span id="cnt">0</span>)</h3>
     <div class="found" id="found"></div>
   </div>
-
   <div class="card" id="sol" style="display:none">
-    <h3>كلمات ممكنة في هذه الجولة</h3>
+    <h3 data-t="sol"></h3>
     <div class="found" id="solList"></div>
   </div>
-
-  <div class="btns"><button class="b" id="bNew">🎲 جولة جديدة</button><button class="b g" id="bEnd">إنهاء وعرض الحلول</button></div>
+  <div class="btns"><button class="b" id="bNew" data-t="newr"></button><button class="b g" id="bEnd" data-t="end"></button></div>
 </div>
 
 <script>
-const RAW = `مدرسة كتاب قلم معلم تلميذ مكتبة مدينة حديقة شجرة زهرة فراشة سماء نجمة قمر شمس بحر نهر جبل صحراء سيارة طائرة قطار دراجة حافلة مطبخ غرفة نافذة باب طاولة كرسي سرير مفتاح ساعة هاتف حاسوب شاشة لوحة مسطرة محفظة حقيبة دفتر ورقة كلمة حروف رسالة صديق عائلة والد والدة اخ اخت جدة جد عمل علم نور ماء خبز حليب تفاح برتقال موزة عنب تمر زيتون طماطم بطاطا جزر بصل ثوم فلفل سمك دجاج لحم بيض جبن عسل سكر ملح شاي قهوة عصير طعام فطور غداء عشاء مسجد قرآن صلاة صيام زكاة حج رمضان وطن جزائر عاصمة ولاية قرية شارع طريق جسر ميناء مطار مصنع مزرعة حقل بستان غابة وادي سهل هضبة واحة رمل حجر صخرة تراب طين مطر ثلج رياح سحاب غيمة برق رعد ربيع صيف خريف شتاء صباح مساء ليل نهار يوم اسبوع شهر سنة وقت زمن حياة سعادة فرح حب سلام امل صبر شكر احترام ادب خلق قراءة كتابة رسم لعب جري سباحة ركض قفز نوم حلم فكرة ذكاء عقل قلب عين اذن انف فم يد رجل راس شعر وجه سن لسان طفل بنت ولد طبيب مهندس نجار حداد خباز بائع شرطي جندي فلاح تاجر كاتب شاعر رسام اسد نمر فيل زرافة قرد ذئب ثعلب ارنب غزال حصان جمل بقرة خروف ماعز كلب قطة فار طير عصفور حمامة نسر بطة ضفدع سلحفاة ذبابة نملة نحلة عقرب حوت دلفين نمل سلم بيت دار ملك شمع كرة لون ريح بنك سوق ثمن مال ذهب فضة حديد نحاس زجاج خشب قماش صوف حرير كتف ظهر بطن ركبة قدم اصبع ظفر دم جلد عظم رئة كبد كلية معدة`;
-const norm = s => s.replace(/[\u064B-\u065F\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي');
-const DICT = new Set(RAW.split(/\s+/).filter(Boolean).map(norm).filter(w=>w.length>=2));
-const WORDS = [...DICT];
-const FILL = 'اااااللللمممننوووييييببتتررسسدكقفحعهجزشصطذخثغضظ';
-const DURATION = 90;
+const AR = `مدرسة كتاب قلم معلم تلميذ مكتبة مدينة حديقة شجرة زهرة فراشة سماء نجمة قمر شمس بحر نهر جبل صحراء سيارة طائرة قطار دراجة حافلة مطبخ غرفة نافذة باب طاولة كرسي سرير مفتاح ساعة هاتف حاسوب شاشة لوحة مسطرة محفظة حقيبة دفتر ورقة كلمة حروف رسالة صديق عائلة والد والدة اخ اخت جدة جد عمل علم نور ماء خبز حليب تفاح برتقال موزة عنب تمر زيتون طماطم بطاطا جزر بصل ثوم فلفل سمك دجاج لحم بيض جبن عسل سكر ملح شاي قهوة عصير طعام فطور غداء عشاء مسجد قرآن صلاة صيام زكاة حج رمضان وطن جزائر عاصمة ولاية قرية شارع طريق جسر ميناء مطار مصنع مزرعة حقل بستان غابة وادي سهل هضبة واحة رمل حجر صخرة تراب طين مطر ثلج رياح سحاب غيمة برق رعد ربيع صيف خريف شتاء صباح مساء ليل نهار يوم اسبوع شهر سنة وقت زمن حياة سعادة فرح حب سلام امل صبر شكر احترام ادب خلق قراءة كتابة رسم لعب جري سباحة ركض قفز نوم حلم فكرة ذكاء عقل قلب عين اذن انف فم يد رجل راس شعر وجه سن لسان طفل بنت ولد طبيب مهندس نجار حداد خباز بائع شرطي جندي فلاح تاجر كاتب شاعر رسام اسد نمر فيل زرافة قرد ذئب ثعلب ارنب غزال حصان جمل بقرة خروف ماعز كلب قطة فار طير عصفور حمامة نسر بطة ضفدع سلحفاة ذبابة نملة نحلة عقرب حوت دلفين نمل سلم بيت دار ملك شمع كرة لون ريح بنك سوق ثمن مال ذهب فضة حديد نحاس زجاج خشب قماش صوف حرير كتف ظهر بطن ركبة قدم اصبع ظفر دم جلد عظم رئة كبد كلية معدة`;
+const FR = `maison jardin soleil lune etoile ecole livre stylo cahier table chaise porte fenetre chat chien oiseau poisson cheval vache mouton lapin souris fleur arbre foret riviere montagne mer plage sable pierre nuage pluie neige vent orage ciel terre feu eau pain lait fromage beurre sucre sel fruit pomme poire orange banane raisin cerise fraise citron legume carotte tomate oignon ail riz pates soupe gateau bonbon cafe the jus ami famille mere pere frere soeur enfant garcon fille homme femme medecin maitre eleve classe lecon lire ecrire dessin jouer courir sauter nager dormir rever penser savoir aimer chanter danser musique film photo image mot lettre phrase texte nombre calcul voiture train avion bateau velo route pont ville village marche magasin banque hopital poste gare ete hiver automne printemps matin soir nuit jour semaine mois annee heure temps coeur main pied tete bras jambe oeil nez bouche dent oreille doigt visage cheveu dos ventre or argent fer bois verre papier tissu laine`;
+const EN = `house garden sun moon star school book pen notebook table chair door window cat dog bird fish horse cow sheep rabbit mouse flower tree forest river mountain sea beach sand stone cloud rain snow wind storm sky earth fire water bread milk cheese butter sugar salt fruit apple pear orange banana grape cherry lemon carrot tomato onion rice soup cake candy coffee tea juice friend family mother father brother sister child boy girl man woman doctor teacher student class lesson read write draw play run jump swim sleep dream think know love sing dance music film photo image word letter sentence text number car train plane boat bike road bridge city village market shop bank hospital station summer winter autumn spring morning evening night day week month year hour time heart hand foot head arm leg eye nose mouth tooth ear finger face hair back gold silver iron wood glass paper wool`;
 
-let letters=[], used=[], found=[], score=0, time=DURATION, timer=null, running=false, pending=null, best=0;
-try{ best = +localStorage.getItem('horouf_best')||0 }catch(e){}
+const normAr = s => s.replace(/[\u064B-\u065F\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي');
+const normLat = s => s.toLowerCase().replace(/œ/g,'oe').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 
-const $ = id => document.getElementById(id);
-const count = a => a.reduce((m,c)=>(m[c]=(m[c]||0)+1,m),{});
-const canMake = (w,pool) => { const c={...pool}; for(const ch of w){ if(!c[ch]) return false; c[ch]--; } return true; };
+const L = {
+ ar:{dir:'rtl',norm:normAr,raw:AR,fill:'اااااللللمممننوووييييببتتررسسدكقفحعهجزشصطذخثغضظ',test:/[\u0600-\u06FF]/,
+  t:{title:'🔤 لعبة الحروف',time:'الوقت',score:'النقاط',best:'أفضل نتيجة',ok:'✔ تأكيد',back:'⌫ حذف',clear:'مسح',shuf:'🔀 خلط',
+  hint:'كوّن أكبر عدد من الكلمات (3 حروف فأكثر). النقاط = مربع عدد الحروف. يمكنك أيضًا الكتابة بلوحة المفاتيح.',
+  mine:'كلماتك',sol:'كلمات ممكنة في هذه الجولة',newr:'🎲 جولة جديدة',end:'إنهاء وعرض الحلول',ph:'اضغط على الحروف لتكوين كلمة',
+  short:'الكلمة قصيرة: 3 حروف على الأقل',dup:'هذه الكلمة وجدتها من قبل',notin:'الكلمة غير موجودة في القاموس المدمج. إن كنت متأكدًا أنها صحيحة اضغط «قبول الكلمة».',
+  acc:'قبول الكلمة',great:'أحسنت!',over:'انتهت الجولة! نقاطك: ',none:'لا توجد كلمات في القاموس المدمج'}},
+ fr:{dir:'ltr',norm:normLat,raw:FR,fill:'eeeeeaaaaiiinnnrrrsssttuuullloodcmpbfghvjqxyz',test:/^[a-z]$/,
+  t:{title:'🔤 Jeu de lettres',time:'Temps',score:'Points',best:'Record',ok:'✔ Valider',back:'⌫ Effacer',clear:'Vider',shuf:'🔀 Mélanger',
+  hint:'Forme le plus de mots possible (3 lettres minimum). Points = carré du nombre de lettres. Tu peux aussi taper au clavier.',
+  mine:'Tes mots',sol:'Mots possibles dans cette manche',newr:'🎲 Nouvelle manche',end:'Terminer et voir les solutions',ph:'Touche les lettres pour former un mot',
+  short:'Mot trop court : 3 lettres minimum',dup:'Tu as déjà trouvé ce mot',notin:'Mot absent du dictionnaire intégré. Si tu es sûr qu’il est correct, appuie sur « Accepter le mot ».',
+  acc:'Accepter le mot',great:'Bravo !',over:'Manche terminée ! Score : ',none:'Aucun mot dans le dictionnaire intégré'}},
+ en:{dir:'ltr',norm:normLat,raw:EN,fill:'eeeeeaaaaiiioooonnnrrrsssttuullldcmpbfghvjqxyzkw',test:/^[a-z]$/,
+  t:{title:'🔤 Letters Game',time:'Time',score:'Score',best:'Best',ok:'✔ Submit',back:'⌫ Delete',clear:'Clear',shuf:'🔀 Shuffle',
+  hint:'Make as many words as you can (3 letters or more). Points = letters squared. You can also type on your keyboard.',
+  mine:'Your words',sol:'Possible words this round',newr:'🎲 New round',end:'Finish and show solutions',ph:'Tap letters to build a word',
+  short:'Too short: at least 3 letters',dup:'You already found this word',notin:'Word not in the built-in dictionary. If you are sure it is valid, press “Accept word”.',
+  acc:'Accept word',great:'Well done!',over:'Round over! Score: ',none:'No words in the built-in dictionary'}}
+};
+const DURATION=90;
+let lang='ar', D=null, DICT=null, WORDS=[], letters=[], used=[], found=[], score=0, time=DURATION, timer=null, running=false, pending=null, best=0;
+try{ const s=localStorage.getItem('horouf_lang'); if(L[s]) lang=s; }catch(e){}
+const $=id=>document.getElementById(id);
+const T=k=>L[lang].t[k];
+const count=a=>a.reduce((m,c)=>(m[c]=(m[c]||0)+1,m),{});
+const canMake=(w,pool)=>{const c={...pool};for(const ch of w){if(!c[ch])return false;c[ch]--;}return true;};
+const shuffleArr=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 
-function shuffleArr(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
-
+function setLang(l){
+  lang=l; D=L[l];
+  try{localStorage.setItem('horouf_lang',l)}catch(e){}
+  document.documentElement.lang=l; document.documentElement.dir=D.dir;
+  DICT=new Set(D.raw.split(/\s+/).filter(Boolean).map(D.norm).filter(w=>w.length>=2));
+  WORDS=[...DICT];
+  try{best=+localStorage.getItem('horouf_best_'+l)||0}catch(e){best=0}
+  $('title').textContent=T('title');
+  document.querySelectorAll('[data-t]').forEach(e=>e.textContent=T(e.dataset.t));
+  document.querySelectorAll('.langs button').forEach(b=>b.classList.toggle('on',b.dataset.l===l));
+  newRound();
+}
 function newRound(){
   clearInterval(timer);
-  const cands = WORDS.filter(w=>w.length>=5 && w.length<=8);
-  const base = cands[Math.floor(Math.random()*cands.length)].split('');
-  while(base.length<10) base.push(FILL[Math.floor(Math.random()*FILL.length)]);
-  letters = shuffleArr(base);
-  used=[]; found=[]; score=0; time=DURATION; running=true; pending=null;
-  $('sol').style.display='none';
-  setMsg('');
-  render();
-  timer=setInterval(()=>{ time--; $('time').textContent=time; if(time<=0) endRound(); },1000);
+  const cands=WORDS.filter(w=>w.length>=5&&w.length<=8);
+  const base=cands[Math.floor(Math.random()*cands.length)].split('');
+  while(base.length<10) base.push(D.fill[Math.floor(Math.random()*D.fill.length)]);
+  letters=shuffleArr(base); used=[]; found=[]; score=0; time=DURATION; running=true; pending=null;
+  $('sol').style.display='none'; setMsg(''); render();
+  timer=setInterval(()=>{time--;$('time').textContent=time;if(time<=0)endRound();},1000);
 }
-
 function render(){
   $('tiles').innerHTML='';
-  letters.forEach((ch,i)=>{
-    const b=document.createElement('button');
-    b.className='tile'+(used.includes(i)?' used':'');
-    b.textContent=ch; b.onclick=()=>add(i);
-    $('tiles').appendChild(b);
-  });
-  const w=$('word');
-  w.innerHTML = used.length ? used.map(i=>`<span class="chip">${letters[i]}</span>`).join('') : '<span class="ph">اضغط على الحروف لتكوين كلمة</span>';
-  $('score').textContent=score; $('best').textContent=best; $('time').textContent=time;
-  $('cnt').textContent=found.length;
-  $('found').innerHTML = found.map(f=>`<span class="f hit">${f.w} +${f.w.length*f.w.length}</span>`).join('');
+  letters.forEach((ch,i)=>{const b=document.createElement('button');b.className='tile'+(used.includes(i)?' used':'');b.textContent=ch;b.onclick=()=>add(i);$('tiles').appendChild(b);});
+  $('word').innerHTML=used.length?used.map(i=>`<span class="chip">${letters[i]}</span>`).join(''):`<span class="ph">${T('ph')}</span>`;
+  $('score').textContent=score;$('best').textContent=best;$('time').textContent=time;$('cnt').textContent=found.length;
+  $('found').innerHTML=found.map(f=>`<span class="f hit">${f.w} +${f.w.length*f.w.length}</span>`).join('');
 }
-function setMsg(t,cls){ const m=$('msg'); m.className='msg '+(cls||''); m.textContent=t||''; }
-function cur(){ return used.map(i=>letters[i]).join(''); }
-
-function add(i){ if(!running||used.includes(i)) return; used.push(i); pending=null; setMsg(''); render(); }
-function back(){ used.pop(); pending=null; setMsg(''); render(); }
-function clr(){ used=[]; pending=null; setMsg(''); render(); }
-function shuf(){ if(!running) return; const w=used.map(i=>letters[i]); used=[]; shuffleArr(letters); render(); }
-
+function setMsg(t,cls){const m=$('msg');m.className='msg '+(cls||'');m.textContent=t||'';}
+const cur=()=>used.map(i=>letters[i]).join('');
+function add(i){if(!running||used.includes(i))return;used.push(i);pending=null;setMsg('');render();}
+function back(){used.pop();pending=null;setMsg('');render();}
+function clr(){used=[];pending=null;setMsg('');render();}
+function shuf(){if(!running)return;used=[];shuffleArr(letters);render();}
 function accept(w,manual){
-  found.push({w,manual}); score+=w.length*w.length; used=[]; pending=null;
-  if(score>best){ best=score; try{localStorage.setItem('horouf_best',best)}catch(e){} }
-  setMsg('أحسنت! +'+w.length*w.length,'ok'); render();
+  found.push({w,manual});score+=w.length*w.length;used=[];pending=null;
+  if(score>best){best=score;try{localStorage.setItem('horouf_best_'+lang,best)}catch(e){}}
+  setMsg(T('great')+' +'+w.length*w.length,'ok');render();
 }
 function submit(){
-  if(!running) return;
+  if(!running)return;
   const w=cur();
-  if(w.length<3){ setMsg('الكلمة قصيرة: 3 حروف على الأقل','bad'); return; }
-  if(found.some(f=>f.w===w)){ setMsg('هذه الكلمة وجدتها من قبل','bad'); return; }
-  if(DICT.has(w)){ accept(w,false); return; }
-  pending=w;
-  setMsg('الكلمة غير موجودة في القاموس المدمج. إن كنت متأكدًا أنها صحيحة اضغط «قبول الكلمة».','bad');
-  const b=document.createElement('div'); b.className='btns';
-  b.innerHTML='<button class="b" id="bAcc">قبول الكلمة</button>';
+  if(w.length<3){setMsg(T('short'),'bad');return;}
+  if(found.some(f=>f.w===w)){setMsg(T('dup'),'bad');return;}
+  if(DICT.has(w)){accept(w,false);return;}
+  pending=w;setMsg(T('notin'),'bad');
+  const b=document.createElement('div');b.className='btns';
+  b.innerHTML=`<button class="b" id="bAcc">${T('acc')}</button>`;
   $('msg').appendChild(b);
-  $('bAcc').onclick=()=>{ if(pending) accept(pending,true); };
+  $('bAcc').onclick=()=>{if(pending)accept(pending,true);};
 }
-
 function endRound(){
-  running=false; clearInterval(timer); time=Math.max(time,0);
+  running=false;clearInterval(timer);time=Math.max(time,0);
   const pool=count(letters);
-  const sols=WORDS.filter(w=>w.length>=3 && canMake(w,pool)).sort((a,b)=>b.length-a.length||a.localeCompare(b,'ar'));
+  const sols=WORDS.filter(w=>w.length>=3&&canMake(w,pool)).sort((a,b)=>b.length-a.length||a.localeCompare(b));
   const got=new Set(found.map(f=>f.w));
-  $('solList').innerHTML = sols.length ? sols.map(w=>`<span class="f ${got.has(w)?'hit':'miss'}">${w}</span>`).join('') : 'لا توجد كلمات في القاموس المدمج';
-  $('sol').style.display='block';
-  setMsg('انتهت الجولة! نقاطك: '+score,'ok'); render();
+  $('solList').innerHTML=sols.length?sols.map(w=>`<span class="f ${got.has(w)?'hit':'miss'}">${w}</span>`).join(''):T('none');
+  $('sol').style.display='block';setMsg(T('over')+score,'ok');render();
 }
-
 document.addEventListener('keydown',e=>{
-  if(e.key==='Enter'){ submit(); return; }
-  if(e.key==='Backspace'){ back(); return; }
-  const ch=norm(e.key);
-  if(ch.length===1 && /[\u0600-\u06FF]/.test(ch)){
-    const i=letters.findIndex((l,k)=>l===ch && !used.includes(k));
-    if(i>=0) add(i);
-  }
+  if(e.key==='Enter'){submit();return;}
+  if(e.key==='Backspace'){back();return;}
+  if(e.ctrlKey||e.metaKey||e.altKey)return;
+  const ch=D.norm(e.key);
+  if(ch.length===1&&D.test.test(ch)){const i=letters.findIndex((l,k)=>l===ch&&!used.includes(k));if(i>=0)add(i);}
 });
-$('bOk').onclick=submit; $('bBack').onclick=back; $('bClear').onclick=clr; $('bShuf').onclick=shuf;
-$('bNew').onclick=newRound; $('bEnd').onclick=()=>{ if(running) endRound(); };
-newRound();
+document.querySelectorAll('.langs button').forEach(b=>b.onclick=()=>setLang(b.dataset.l));
+$('bOk').onclick=submit;$('bBack').onclick=back;$('bClear').onclick=clr;$('bShuf').onclick=shuf;
+$('bNew').onclick=newRound;$('bEnd').onclick=()=>{if(running)endRound();};
+setLang(lang);
 </script>
 </body>
 </html>
+  
